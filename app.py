@@ -2,8 +2,12 @@ from flask import Flask, render_template, request
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+import logging
 
 app = Flask(__name__)
+
+# ログの設定
+logging.basicConfig(filename='error.log', level=logging.ERROR)
 
 def scrape_schedule(url):
     try:
@@ -38,7 +42,10 @@ def scrape_schedule(url):
         return pd.DataFrame(schedule_data)
 
     except Exception as e:
-        return pd.DataFrame({'エラー': [f"エラーが発生しました: {e}"]})
+        # エラーメッセージをログに出力
+        logging.error(f"スクレイピング中にエラーが発生しました: {e}")
+        # エラーメッセージを明示的に送出
+        raise ValueError(f"スクレイピング中にエラーが発生しました: {e}")
 
 @app.route('/')
 def index():
@@ -46,14 +53,20 @@ def index():
 
 @app.route('/', methods=['POST'])  # フォームの送信先を / に変更
 def get_schedule():
-    url = request.form.get('url')
-    df = scrape_schedule(url)
-    if not df.empty and 'エラー' not in df.columns:
-        html_table = df.to_html(index=False, classes='table table-striped')
-    else:
-        error_message = df.iloc[0]['エラー'] if 'エラー' in df.columns else 'スケジュールが取得できませんでした。'
-        html_table = f'<p>{error_message}</p>'
-    return render_template('index.html', table=html_table)  # index.htmlにテーブルを表示
+    try:
+        url = request.form.get('url')
+        df = scrape_schedule(url)
+        if not df.empty and 'エラー' not in df.columns:
+            html_table = df.to_html(index=False, classes='table table-striped')
+        else:
+            error_message = df.iloc[0]['エラー'] if 'エラー' in df.columns else 'スケジュールが取得できませんでした。'
+            html_table = f'<p>{error_message}</p>'
+        return render_template('index.html', table=html_table)  # index.htmlにテーブルを表示
+    except ValueError as ve:
+        # ログに出力されたエラーメッセージを読み込み
+        with open('error.log', 'r') as f:
+            error_log = f.read()
+        return render_template('index.html', error=str(ve), error_log=error_log)  # エラーメッセージとログを表示
 
 if __name__ == '__main__':
     app.run(debug=True)
