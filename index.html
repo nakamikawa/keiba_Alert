@@ -9,19 +9,19 @@
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">競馬スケジュール取得</h1>
-        <form action="/schedule" method="post">
+        <form action="/" method="post">
             <div class="form-group">
                 <label for="url">URLを入力してください:</label>
                 <input type="text" class="form-control" id="url" name="url" required>
             </div>
             <button type="submit" class="btn btn-primary">スケジュール取得</button>
         </form>
-
-        <!-- エラーメッセージ表示 -->
-        {% if error_message %}
-            <div class="alert alert-danger mt-3" role="alert">
-                {{ error_message }}
-            </div>
+        
+        <!-- テーブルを表示 -->
+        {% if table %}
+        <div class="mt-5">
+            {{ table | safe }}
+        </div>
         {% endif %}
     </div>
 </body>

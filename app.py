@@ -44,7 +44,7 @@ def scrape_schedule(url):
 def index():
     return render_template('index.html')
 
-@app.route('/schedule', methods=['POST'])
+@app.route('/', methods=['POST'])  # フォームの送信先を / に変更
 def get_schedule():
     url = request.form.get('url')
     df = scrape_schedule(url)
@@ -53,7 +53,7 @@ def get_schedule():
     else:
         error_message = df.iloc[0]['エラー'] if 'エラー' in df.columns else 'スケジュールが取得できませんでした。'
         html_table = f'<p>{error_message}</p>'
-    return render_template('schedule.html', table=html_table)
+    return render_template('index.html', table=html_table)  # index.htmlにテーブルを表示
 
 if __name__ == '__main__':
     app.run(debug=True)
