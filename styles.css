@@ -1,0 +1,14 @@
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+input, button {
+    margin-bottom: 10px;
+}
+
+#raceInfo {
+    margin-top: 20px;
+    text-align: left;
+}
