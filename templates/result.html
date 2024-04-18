@@ -3,10 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>スクレイピング結果</title>
+    <title>競馬スケジュール結果</title>
 </head>
 <body>
-    <h1>スクレイピング結果</h1>
-    <pre>{{ text }}</pre>
+    <h1>競馬スケジュール結果</h1>
+    <table>
+        <tr>
+            <th>R</th>
+            <th>発走時刻</th>
+            <th>レース名</th>
+            <th>内容</th>
+        </tr>
+        {% for race in schedule_data %}
+        <tr>
+            <td>{{ race['R'] }}</td>
+            <td>{{ race['発走時刻'] }}</td>
+            <td>{{ race['レース名'] }}</td>
+            <td>{{ race['内容'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>
