@@ -8,7 +8,7 @@ async function fetchRaceInfo() {
         const data = await response.json();
         displayRaceInfo(data);
     } catch (error) {
-        console.error('Error fetching race info:', error);
+        console.error('Error fetching race info:', error.message);
     }
 }
 
@@ -22,6 +22,6 @@ function displayRaceInfo(data) {
             raceInfoDiv.appendChild(raceElement);
         }
     } catch (error) {
-        console.error('Error displaying race info:', error);
+        console.error('Error displaying race info:', error.message);
     }
 }
