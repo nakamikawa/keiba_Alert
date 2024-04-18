@@ -38,8 +38,7 @@ def scrape_schedule(url):
         return pd.DataFrame(schedule_data)
 
     except Exception as e:
-        print(f"エラーが発生しました: {e}")
-        return pd.DataFrame()
+        return pd.DataFrame({'エラー': [f"エラーが発生しました: {e}"]})
 
 @app.route('/')
 def index():
@@ -49,10 +48,11 @@ def index():
 def get_schedule():
     url = request.form.get('url')
     df = scrape_schedule(url)
-    if not df.empty:
+    if not df.empty and 'エラー' not in df.columns:
         html_table = df.to_html(index=False, classes='table table-striped')
     else:
-        html_table = '<p>スケジュールが取得できませんでした。</p>'
+        error_message = df.iloc[0]['エラー'] if 'エラー' in df.columns else 'スケジュールが取得できませんでした。'
+        html_table = f'<p>{error_message}</p>'
     return render_template('schedule.html', table=html_table)
 
 if __name__ == '__main__':
